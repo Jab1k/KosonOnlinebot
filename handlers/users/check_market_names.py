@@ -220,7 +220,7 @@ async def isend(callback_query: types.CallbackQuery):
     message += "---------------------------------\n"
     for item in all_make:
         message += f"{item[0]}\n" \
-                   f"*{item[1]} x {item[2]} = {(item[2] * item[1])}\n\n*"
+                   f"*{item[1][0]} x {item[2]} = {(item[1][0] * item[2])}\n\n*"
     message += "---------------------------------\n"
     message += f"\nSiz olmoqchi bo'lgan maxsulotlarni tastiqlaysizmi ?"
     await callback_query.message.reply(message,reply_markup=end, parse_mode='Markdown')
@@ -235,18 +235,18 @@ async def yes(callback_query: types.CallbackQuery):
 
 @dp.message_handler(lambda x: x.text == "Naqd pul💸",state=Auth.qanday_turda_pul_utqazadi)
 async def naxt_tulash(message: types.Message, state: FSMContext):
-    await message.reply("Dastafka turini tanlang!", reply_markup=keyboard_request_dastafka)
+    await message.reply("Buyurtma turini tanlang!", reply_markup=keyboard_request_dastafka)
     await state.update_data(qandayturdatulaydi=message.text)
     await Auth.qanaqa_turda.set()
 
 @dp.message_handler(lambda x: x.text == "Plastik karta💳",state=Auth.qanday_turda_pul_utqazadi)
 async def kartadan_tulash(message: types.Message, state: FSMContext):
-    await message.reply("Dastafka turini tanlang!", reply_markup=keyboard_request_dastafka)
+    await message.reply("Buyurtma turini tanlang!", reply_markup=keyboard_request_dastafka)
     await state.update_data(qandayturdatulaydi=message.text)
     await Auth.qanaqa_turda.set()
 
 
-@dp.message_handler(lambda x: x.text == "O'zi olib ketish🚶‍♂️",state=Auth.qanaqa_turda)
+@dp.message_handler(lambda x: x.text == "O'zi olib ketish 🚶‍♂️",state=Auth.qanaqa_turda)
 async def oziolibketish(message: types.Message,state: FSMContext):
     await message.reply(text="Barakalla endi raqamingizni yuboring\npastdagi tugmani bosish orqali!",
                                        reply_markup=keybord_request_contact)
@@ -271,8 +271,9 @@ abcs = 0
 
 @dp.message_handler(state=Auth.location,content_types=["location"])
 async def chacking_location(message: types.Message, state: FSMContext):
-    print("sakom")
+    # print("sakom")
     global abcs
+    abcs = 0
     await state.update_data(location=message.location)
     data = await state.get_data()
     late = data.get("location")
@@ -282,28 +283,31 @@ async def chacking_location(message: types.Message, state: FSMContext):
     m = ""
     jami = 0
     for abc in all_make:
-        print("sakom")
-        jami += (abc[1] * abc[2])
-    if qanday == "O'zi olib ketish🚶‍":
-        print("sakom")
+        # print("sakom")
+        print(abc)
+        jami += (abc[1][0] * abc[2])
+    if qanday == "O'zi olib ketish 🚶‍♂️":
+        # print("sakom")
         abcs = 0
         jami += 0
     elif qanday == "Yetkazib berish🚚":
         abcs = 15000
-        print(abcs)
+        # print(abcs)
         jami += 15000
     for item in all_make:
-        m += f"*{item[0]} - {item[1]} x {item[2]} = {(item[2] * item[1])}*\n"
+        # f"{item[0]}\n" \
+        #            f"*{item[1][0]} x {item[2]} = {(item[1][0] * item[2])}\n\n*"
+        m += f"*{item[0]} - {item[1][0]} x {item[2]} = {(item[1][0] * item[2])}*\n"
     await state.reset_state(with_data=True)
-    print("sakom1")
+    # print("sakom1")
     for ab in range(len(all_market_ids)):
-        print("sakom", all_market_ids[ab][0], market_name)
+        # print("sakom", all_market_ids[ab][0], market_name)
         if all_market_ids[ab][0] == market_name:
             print("krdi")
             await message.reply(text=f"Tez orada siz bilan bog'lanamiz.\n\n"
                                 f"*Sizning IDyingiz!: {id}*\n\n"
                                 f"Siz buyurtma qilgan tovarlar: \n{m}\n"
-                                f"*Dostafka turi: {qanday} - {abcs} *\n\n"
+                                f"*Buyurtma turi: {qanday} - {abcs} *\n\n"
                                 f"To'lov usuli: {which_turda_tulaydi}\n\n"
                                 f"*Jami summa: {jami}*\n",
                                 reply_markup=keyboard1,
@@ -351,24 +355,39 @@ async def handle_callback_query(callback_query: types.CallbackQuery):
     global old_mahsulot
     global old_page_name
     global old_current_start
-    print("salom", value, callback_data)
+    # print("salom", value, callback_data)
     if callback_data in value:
-        print("salom", Data[callback_data])
+        # print("salom", Data[callback_data])
         # print(callback_data)
         old_page_name = callback_data
         await show_page_callbackdata(callback_query, Data[callback_data], 1)
     else:
-        print("hhi")
+        # print("hhi")
         old_page_name = ""
         old_current_start = 0
         name = back.checkmahs(callback_data)
-        print(name)
-        if name != 'Topilmadi!':
+        if name[0] != 'Topilmadi!':
+            # print(name, "salom")
             old_mahsulot = callback_data
             all_make.append([callback_data, name])
-            from keyboards.default.keyboards import menuStart
-            await callback_query.message.answer(
-                text=f'Maxsulot nomi:\n{callback_query.data}\n<b>{name}</b> ',
+            if name[1] == "" or name[1] is None:
+                # print("salom")
+                from keyboards.default.keyboards import menuStart
+                await callback_query.message.answer(
+                text=f'Maxsulot nomi:\n{callback_query.data}\n<b>{name[0]}</b> ',
                 parse_mode="HTML",
                 reply_markup=menuStart
             )
+            else:
+                # print("alek")
+                photo_path = name[1]
+                # print(photo_path)
+                with open(photo_path, 'rb') as photo_file:
+                    from keyboards.default.keyboards import menuStart
+                    await callback_query.message.answer_photo(
+                    photo=photo_file,
+                caption=f'Maxsulot nomi:\n{callback_query.data}\n<b>{name[0]}</b> ',
+                parse_mode="HTML",
+                reply_markup=menuStart
+                )
+            

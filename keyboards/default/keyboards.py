@@ -62,5 +62,5 @@ keybord_request_location.insert(KeyboardButton(request_location=True,text="Locat
 
 
 keyboard_request_dastafka = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-keyboard_request_dastafka.add(KeyboardButton(text="O'zi olib ketish🚶‍♂️"),KeyboardButton(text="Yetkazib berish🚚"))
+keyboard_request_dastafka.add(KeyboardButton(text="O'zi olib ketish 🚶‍♂️"),KeyboardButton(text="Yetkazib berish🚚"))
 

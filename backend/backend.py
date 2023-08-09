@@ -5,7 +5,7 @@ res = {}
 def getgroup(name: str):
     if name == '🛒Gulmira Market':
         db = mysql.connector.connect(
-            host='176.96.243.56',
+            host = "176.96.243.56",
             user='easytrade',
             database='gulmira_db',
             port='3306',
@@ -20,10 +20,11 @@ def getgroup(name: str):
             r = res.get(m[1], [])
             r.append(m[0])
             res[m[1]] = r
+
         return res
     elif name == "🍔Bursa HALLAL FOOD":
         db = mysql.connector.connect(
-            host='176.96.243.56',
+            host = "176.96.243.56",
             user='easytrade',
             database='bursa_db',
             port='3306',
@@ -41,13 +42,14 @@ def getgroup(name: str):
                 r = res.get(m[1], [])
                 r.append(m[0])
                 res[m[1]] = r
+
         return res
 
     else:
         return {"kechirasiz":0}
 def checkmahs(name: str):
     db = mysql.connector.connect(
-    	host = '176.96.243.56',
+            host = "176.96.243.56",
 	user='easytrade',
 	database='gulmira_db',
 	port='3306',
@@ -55,17 +57,17 @@ def checkmahs(name: str):
 	)
     mycrsor = db.cursor()
     mycrsor.execute("""
-select dir_goods.gd_name, dir_prices.prc_value from dir_goods LEFT JOIN dir_prices ON dir_goods.gd_id = dir_prices.prc_good
-	""")
+select dir_goods.gd_name, dir_prices.prc_value, dir_goods.gd_photo from dir_goods LEFT JOIN dir_prices ON dir_goods.gd_id = dir_prices.prc_good
+    	""")
     datas = mycrsor.fetchall()
-    print(name)
     for i in range(len(datas)):
-        if datas[i][0][0:18] == name:
-            return datas[i][1]
+        if datas[i][0][0:18].lower() == name.lower():
+            print(datas[i][1], datas[i][2])
+            return [datas[i][1], datas[i][2]]
 
     # -------------------------------
     db = mysql.connector.connect(
-        host='176.96.243.56',
+            host = "176.96.243.56",
         user='easytrade',
         database='bursa_db',
         port='3306',
@@ -73,11 +75,13 @@ select dir_goods.gd_name, dir_prices.prc_value from dir_goods LEFT JOIN dir_pric
     )
     mycrsor = db.cursor()
     mycrsor.execute("""
-    select dir_goods.gd_name, dir_prices.prc_value from dir_goods LEFT JOIN dir_prices ON dir_goods.gd_id = dir_prices.prc_good
+    select dir_goods.gd_name, dir_prices.prc_value, dir_goods.gd_photo from dir_goods LEFT JOIN dir_prices ON dir_goods.gd_id = dir_prices.prc_good
     	""")
     datas = mycrsor.fetchall()
-    print(name)
+    # print(datas)
     for i in range(len(datas)):
-        if datas[i][0][0:18] == name:
-            return datas[i][1]
-    return 'Topilmadi!'
+        if datas[i][0][0:18].lower() == name.lower():
+            print(datas[i])
+            return [datas[i][1], datas[i][2]]
+    return ['Topilmadi!']
+checkmahs("lavash")
