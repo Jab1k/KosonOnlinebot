@@ -1,6 +1,5 @@
 from aiogram import types
 from aiogram.dispatcher.filters.builtin import CommandStart
-from data.config import *
 from loader import dp
 from keyboards.default.keyboards import *
 import datetime

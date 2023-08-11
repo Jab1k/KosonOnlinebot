@@ -4,7 +4,6 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import handlers.users.check_market_names as check
 from keyboards.default.keyboards import keyboard1
 from aiogram.types import ContentTypes
-
 @dp.message_handler(content_types=ContentTypes.TEXT)
 async def search_page_two(mes: types.Message):
     m = '',

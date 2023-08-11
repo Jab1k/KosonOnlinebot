@@ -20,7 +20,7 @@ kafe1.add("Bosh menyu 🏠")
 
 
 keyboard1 = ReplyKeyboardMarkup(resize_keyboard=True, row_width=1, one_time_keyboard=True)
-keyboard1.row("Uy qurulish mollari", "Savdo Do'konlari", "Dorixonalar", "Restoran va Kafe")
+keyboard1.row("Restoran va Kafe", "Savdo Do'konlari", "Dorixona", "Uy qurulish mollari")
 keyboard_savdo = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
 
 for i in range(len(Savdo)):

@@ -11,11 +11,15 @@ from keyboards.default.keyboards import kafes
 
 from backend import backend as back
 
-all_market_ids = [ ["🛒Gulmira Market" , -1001674061189], ["🍔Bursa HALLAL FOOD", -1001674061189] ]
+all_market_ids = [ ["🛒Gulmira Market" , -1001674061189], ["🍔Bursa HALLAL FOOD", -1001913653920] ]
 
-
-
-
+@dp.message_handler(lambda message: message.reply_to_message)
+async def handle_reply(message: types.Message):
+    # dp.bot.send_message(chat_id=)
+    reply_id = message.reply_to_message.text.split("\n")
+    replyid = reply_id[0].split(" ")
+    await dp.bot.send_message(chat_id=replyid[1], text=message.text)
+    
 @dp.message_handler(lambda m: m.text == "Uy qurulish mollari")
 async def check_Uy_nullish(mess: types.Message):
     await mess.reply(text=f"Siz {mess.text}ni tanladingiz va bulardan birini tanlang!", reply_markup=keyboard_xostavar)
@@ -306,6 +310,7 @@ async def chacking_location(message: types.Message, state: FSMContext):
             print("krdi")
             await message.reply(text=f"Tez orada siz bilan bog'lanamiz.\n\n"
                                 f"*Sizning IDyingiz!: {id}*\n\n"
+                                f"Username: {message.from_user.username}"
                                 f"Siz buyurtma qilgan tovarlar: \n{m}\n"
                                 f"*Buyurtma turi: {qanday} - {abcs} *\n\n"
                                 f"To'lov usuli: {which_turda_tulaydi}\n\n"
@@ -314,7 +319,9 @@ async def chacking_location(message: types.Message, state: FSMContext):
                                 parse_mode='Markdown'
                                 )
             await dp.bot.send_message(all_market_ids[ab][1],text=
+                                      f"Idsi: {message.chat.id}\n"
             f"Sizning IDyingiz!: {id}\n"
+            f"Username: {message.from_user.username}"
             f"Ismi: {message.from_user.full_name}\n"
             f"Raqami: {data.get('number')}\n"
             f"Buyurtma qilingan maxsulotlar: \n{m}\n"
@@ -323,10 +330,18 @@ async def chacking_location(message: types.Message, state: FSMContext):
             f"Jami summa: {jami}\n", parse_mode="Markdown"
                                       )
             await dp.bot.send_location(all_market_ids[ab][1], latitude=late.latitude, longitude=late.longitude)
-            started_index = old_message_id
-            ended_index = message.message_id - 1
-            for abs in range(started_index, ended_index):
-                await dp.bot.delete_message(chat_id=message.chat.id, message_id=str(abs))
+            await dp.bot.send_message(-1001674061189,text=
+                                      f"Idsi: {message.chat.id}\n"
+            f"Sizning IDyingiz!: {id}\n"
+            f"Username: @{message.from_user.username}\n"
+            f"Ismi: {message.from_user.full_name}\n"
+            f"Raqami: {data.get('number')}\n"
+            f"Buyurtma qilingan maxsulotlar: \n{m}\n"
+            f"Qanday turda: {qanday} - {abcs}\n"
+            f"To'lov usuli: {which_turda_tulaydi}\n"
+            f"Jami summa: {jami}\n", parse_mode="Markdown"
+                                      )
+            await dp.bot.send_location(-1001674061189, latitude=late.latitude, longitude=late.longitude)
             all_make.clear()
             break
 
